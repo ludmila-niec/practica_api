@@ -1,0 +1,103 @@
+openapi: 3.0.0
+info:
+    description: "documentacion de api para aplicacion To Do List."
+    version: "1.0.0"
+    title: To Do List
+    contact:
+        email: ludmilax.lyiux@gmail.com
+
+paths:
+    /items:
+        get:
+            summary: Retorna la lista de items
+            responses:
+                200:
+                    description: Se retornó la lista de items exitosamente
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Items"
+
+                404:
+                    description: Error! No se encontró el recurso
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Error"
+
+        post:
+            summary: Crea una nueva tarea
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/Item"
+
+            responses:
+                201:
+                    description: Ok! Nueva tarea creada
+                    content:
+                        application/json:
+                            schema:
+                                properties:
+                                    success:
+                                        type: boolean
+                                        example: true
+                                    message:
+                                        type: string
+                                        example: Nueva tarea creada
+
+                400:
+                    description: Error! Bad request. Falta informacion
+
+    /items/{id}:
+        get:
+            summary: Retorna informacion sobre un tarea especifica
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  description: ID del item
+                  schema:
+                      type: integer
+                      minimum: 1
+
+            responses:
+                200:
+                    description: Success!
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Item"
+
+components:
+    schemas:
+        Item:
+            description: Modelo que contiene informacion sobre la tarea
+            properties:
+                id:
+                    type: integer
+                    example: 2
+                titulo:
+                    type: string
+                    example: Hacer actividad API REST
+                completed:
+                    type: boolean
+                    example: false
+
+        Items:
+            description: Array con informacion sobre las tareas
+            type: array
+            items:
+                $ref: "#/components/schemas/Item"
+
+        Error:
+            description: Mensaje de error 404
+            properties:
+                error:
+                    type: string
+                    example: "404"
+                message:
+                    type: string
+                    example: Recurso no encontrado.
